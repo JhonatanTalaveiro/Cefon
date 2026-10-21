@@ -1,0 +1,50 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+Static one-page site for CEFON Centro Fonoaudiológico (speech therapy clinic in Mococa/SP), plus a separate privacy policy page. Astro 7, Tailwind CSS 4 (via `@tailwindcss/vite`), GSAP. Site copy and code comments are in Brazilian Portuguese; keep them that way.
+
+## Commands
+
+| Command | Purpose |
+| :-- | :-- |
+| `npm run dev` | Dev server (port 4321). Per `AGENTS.md`, `astro dev --background` + `astro dev stop/status/logs` also work |
+| `npm run build` | Static build to `dist/` |
+| `npm run preview` | Serve `dist/`; measure Lighthouse against this, not the dev server |
+| `npx astro check` | Type check (`@astrojs/check`); there is no linter and no test suite |
+| `npm run assets` | Regenerate `public/` favicon.svg/.ico, apple-touch-icon, `logo.png`, `og-image.png` from `src/data/logo.ts` (Node imports the `.ts` file directly via type stripping) |
+
+`.claude/launch.json` defines `dev` (port 4321) and `preview` (port 4322) for the browser preview.
+
+Lighthouse 90+ in every category is a hard requirement (it currently scores 100). Check with `npx lighthouse <preview-url>` (mobile default, then `--preset=desktop`), setting `CHROME_PATH` to the local Chrome. On Windows the CLI exits with `EPERM` while deleting its temp folder; that happens after the report is written, so pass `--output=json --output-path=<file>` and read the scores from the file. Ports 4321 and 4400 are often taken by other apps on this machine, so read the actual port from the server output.
+
+## Architecture
+
+- **`src/data/` is the single source of truth.** `clinica.ts` holds name, address, phone, hours, WhatsApp, responsible technician and Google Maps URLs; the header, hero, contact section, footer, mobile bar and the JSON-LD `MedicalClinic` schema in `src/pages/index.astro` all read from it. Name/address/phone/hours must stay identical to the clinic's Google Business profile. `servicos.ts` and `profissionais.ts` feed their sections (and the schema's `availableService`). Client-provided content that is still missing is marked `PENDENTE`.
+- **Logo** is a hand-redrawn SVG in `src/data/logo.ts` (circles + stroked wordmark using `currentColor`), rendered by `Logo.astro` and by `scripts/generate-assets.mjs`. Replace it with the official vectors when the brand manual arrives, then run `npm run assets`.
+- **Hero composition** (`blobs` in `Hero.astro`) copies the logo circles by hand, as % of `MARK_VIEWBOX`; `npm run assets` does not update it, so redo it if the logo changes. Each hero chip's dot must match the color of the circle it sits next to.
+- **Buttons:** CTAs use `Button.astro`. Its `detalhe` prop adds a smaller second line saying what happens on tap (the phone number, "Rota pelo Google Maps"); `.btn:has(.btn-detalhe)` keeps the height at 56px. In `MobileBar.astro` each button has about 100px for text at 375px wide, so main labels there stay short ("Ligar", "Como chegar").
+- **Layout** (`src/layouts/Layout.astro`): fonts are imported with `?url` from `@fontsource-variable/*` (latin subset only), preloaded, and declared in an inline `@font-face`. CSS is inlined (`build.inlineStylesheets: 'always'`). An inline script adds `.js` to `<html>` before paint.
+- **Scripts:** `src/scripts/ui.ts` (header shadow, mobile menu, sticky mobile bar via IntersectionObserver on `[data-hero-ctas]`) loads on every page. `src/scripts/motion.ts` (GSAP + ScrollTrigger) is imported only from `index.astro`, so other pages ship no GSAP.
+- **Animation contract:** everything runs inside `gsap.matchMedia('(prefers-reduced-motion: no-preference)')`. Decorative hero elements (`[data-blob]`, `[data-chip]`, `.marker`) are pre-hidden by CSS under `.js` at the bottom of `global.css`. Scroll reveals (`[data-reveal]`) are only hidden by JS for elements below the fold, measured before any tween runs. Never hide the H1 or other LCP text before JS, or LCP suffers.
+- **Map** (`MapFacade.astro`) is click-to-load: the Google iframe sits in a `<template>` and is injected on click, for LGPD and performance. The privacy policy (`#mapa`) documents this.
+
+## Gotchas
+
+- Astro's HTML compression drops the whitespace between a text line and an element on the next line ("texto.<a>"). Add `{' '}` at the end of the text line.
+- `.site-header` uses `backdrop-filter`, which traps `position: fixed` descendants. That is why the mobile menu panel (`#menu-mobile`) is a sibling after `</header>`, not inside it.
+- Component classes (`.btn`, `.mini-titulo`, `.card`, `.icon-bubble`…) live in `@layer components` in `src/styles/global.css`, so Tailwind utilities override them without `!`.
+- Brand colors in `@theme`: `brand-*` are the logo colors, for decoration only. Text and buttons use the darker `*-ink` variants, which meet AA contrast.
+- `site` in `astro.config.mjs` is a placeholder domain (`www.cefon.com.br`). Canonical URLs, OG tags, sitemap and `robots.txt` (generated by `src/pages/robots.txt.ts`) all derive from it.
+
+## Content rules (from the client scope)
+
+- CFFa advertising rules: no prices, no before/after images, no testimonials or reviews, no promises of results or cure. The responsible technician's full name and CRFa must appear in the footer and in the professionals section.
+- LGPD: no analytics, no cookies, no contact form (that is why there is no cookie banner). Adding any of these requires updating the privacy policy.
+- Mobile first, plain and welcoming language, 18px body text, large buttons; part of the audience is elderly. Out of scope: online booking, blog, a page per exam, social feeds, chat widgets.
+
+## Writing and style (from the user)
+
+- Never use the em dash (U+2014): not in copy, titles, aria-labels, code comments or docs. Use a comma, colon, period or parentheses. The clinic's full name is "CEFON Centro Fonoaudiológico".
+- Each section opens with a `.mini-titulo`: a short sentence-case line above the heading saying what the section is about, colored with a `text-*-ink` utility. Never the eyebrow style (uppercase, letter-spacing, colored dot).
+- CTAs say what they do and what opens ("Ligar para agendar", "Como chegar" + "Rota pelo Google Maps"), never a bare "Ligar" or "WhatsApp" without a `detalhe` line.

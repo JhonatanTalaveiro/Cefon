@@ -1,0 +1,18 @@
+---
+import { clinica } from '../data/clinica';
+import Button from './Button.astro';
+---
+
+<!-- Ligar e Como chegar sempre à mão no celular. Fica escondida enquanto os botões do topo estão na tela. -->
+<div
+  class="mobile-bar fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 backdrop-blur lg:hidden"
+  data-mobile-bar
+  data-state="hidden"
+>
+  <div class="container-site flex gap-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+    <Button href={clinica.telefone.link} icon="phone" detalhe="para agendar" class="flex-1 gap-2 px-3">Ligar</Button>
+    <Button href={clinica.mapas.rota} variant="secondary" icon="route" external detalhe="Google Maps" class="flex-1 gap-2 px-3">
+      Como chegar
+    </Button>
+  </div>
+</div>

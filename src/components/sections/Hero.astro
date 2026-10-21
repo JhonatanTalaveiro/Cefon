@@ -1,0 +1,98 @@
+---
+import { clinica, formatarHora } from '../../data/clinica';
+import Button from '../Button.astro';
+import Icon from '../Icon.astro';
+
+// Composição baseada nos círculos do logo (posições e tamanhos em % do quadro).
+const blobs = [
+  { left: 1.6, top: 38, size: 50.6, color: 'rgb(144 204 240 / 0.9)' },
+  { left: 7.9, top: 7.9, size: 50.6, color: 'rgb(0 144 54 / 0.82)' },
+  { left: 44.3, top: 1.6, size: 53.8, color: 'rgb(232 224 64 / 0.72)' },
+  { left: 36.4, top: 7.9, size: 52.2, color: 'rgb(252 228 0 / 0.85)' },
+  { left: 8, top: 30, size: 51.9, color: 'rgb(36 180 228 / 0.75)' },
+  { left: 31.6, top: 41.1, size: 57, color: 'rgb(240 168 144 / 0.8)' },
+  { left: 45.6, top: 38.6, size: 49.4, color: 'rgb(228 84 48 / 0.82)' },
+];
+
+// O ponto de cada etiqueta repete a cor do círculo ao lado dela.
+const chips = [
+  { label: 'Audição', dot: 'var(--color-brand-green)', pos: 'left-[-4%] top-[10%]' },
+  { label: 'Fala', dot: 'var(--color-brand-yellow)', pos: 'right-[-4%] top-[30%]' },
+  { label: 'Linguagem', dot: 'var(--color-brand-sky)', pos: 'left-[-2%] bottom-[16%]' },
+  { label: 'Voz', dot: 'var(--color-brand-coral)', pos: 'right-[6%] bottom-[2%]' },
+];
+
+const abertos = clinica.horarios.filter((h) => h.abre && h.fecha);
+---
+
+<section id="inicio" class="relative isolate overflow-hidden" aria-labelledby="titulo-inicio">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
+    <div class="absolute -top-56 -right-48 size-[40rem] rounded-full bg-[radial-gradient(closest-side,rgb(252_228_0/0.16),transparent)]"></div>
+    <div class="absolute top-1/3 -left-72 size-[36rem] rounded-full bg-[radial-gradient(closest-side,rgb(36_180_228/0.12),transparent)]"></div>
+  </div>
+
+  <div class="container-site grid items-center gap-14 pt-8 pb-20 sm:pt-14 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:pt-14 lg:pb-20">
+    <div>
+      <p class="mini-titulo text-green-ink">{clinica.nomeCompleto}</p>
+
+      <h1 id="titulo-inicio" class="mt-4 text-[2.5rem] leading-[1.05] font-medium tracking-[-0.02em] sm:text-6xl lg:text-[4.25rem]">
+        Fonoaudiologia em <span class="marker">Mococa</span> e região
+      </h1>
+
+      <p class="mt-6 max-w-xl text-lg sm:text-xl">
+        Exames auditivos e acompanhamento de fala, linguagem e voz para bebês, crianças, adultos e idosos.
+        Atendimento próximo e acolhedor, no centro de Mococa.
+      </p>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row" data-hero-ctas>
+        <Button href={clinica.telefone.link} icon="phone" detalhe={clinica.telefone.exibicao}>Ligar para agendar</Button>
+        <Button href={clinica.mapas.rota} variant="secondary" icon="route" external detalhe="Rota pelo Google Maps">
+          Como chegar
+        </Button>
+      </div>
+
+      <ul class="mt-10 grid gap-5 text-base sm:grid-cols-2 sm:gap-8">
+        <li class="flex gap-3">
+          <Icon name="clock" class="mt-0.5 size-6 shrink-0 text-green-ink" />
+          <span>
+            <strong class="block font-semibold text-ink">Horário</strong>
+            {abertos.map((h) => (
+              <span class="block">{h.curto} {formatarHora(h.abre!)} às {formatarHora(h.fecha!)}</span>
+            ))}
+          </span>
+        </li>
+        <li class="flex gap-3">
+          <Icon name="pin" class="mt-0.5 size-6 shrink-0 text-coral-ink" />
+          <span>
+            <strong class="block font-semibold text-ink">Endereço</strong>
+            <span class="block">{clinica.endereco.rua}</span>
+            <span class="block">{clinica.endereco.bairro}, {clinica.endereco.cidade}/{clinica.endereco.uf}</span>
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="relative mx-auto w-full max-w-[20rem] sm:max-w-[26rem] lg:max-w-[31rem]" aria-hidden="true">
+      <div class="relative aspect-square">
+        {blobs.map((b) => (
+          <span
+            data-blob
+            class="absolute rounded-full will-change-transform"
+            style={`left:${b.left}%;top:${b.top}%;width:${b.size}%;height:${b.size}%;background:${b.color}`}
+          ></span>
+        ))}
+        {chips.map((chip) => (
+          <span data-chip class:list={['absolute', chip.pos]}>
+            <span
+              data-chip-inner
+              class="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-base font-semibold text-ink shadow-[0_12px_30px_-12px_rgb(28_35_39/0.35)]"
+            >
+              <span class="size-2.5 rounded-full" style={`background:${chip.dot}`}></span>
+              {chip.label}
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

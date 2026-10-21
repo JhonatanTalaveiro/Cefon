@@ -1,0 +1,122 @@
+---
+import { clinica, enderecoCompleto } from '../data/clinica';
+import Layout from '../layouts/Layout.astro';
+
+const atualizadaEm = '20 de outubro de 2026';
+// PENDENTE: CNPJ e razão social do CEFON; e-mail de contato, se houver.
+const cnpj = 'XX.XXX.XXX/0001-XX';
+---
+
+<Layout
+  title={`Política de Privacidade | ${clinica.nomeCompleto}`}
+  description={`Como o site do ${clinica.nomeCompleto} trata os seus dados, conforme a Lei Geral de Proteção de Dados (LGPD).`}
+>
+  <article class="container-site max-w-3xl py-16 lg:py-24">
+    <p class="mini-titulo">Proteção de dados (LGPD)</p>
+    <h1 class="mt-3 text-4xl leading-[1.1] font-medium sm:text-5xl">Política de Privacidade</h1>
+    <p class="mt-4 text-base text-muted">Atualizada em {atualizadaEm}.</p>
+
+    <div class="mt-10 rounded-3xl border border-line bg-white p-6 sm:p-8">
+      <h2 class="text-xl font-semibold">Resumo</h2>
+      <p class="mt-2">
+        Este site é informativo. Ele não tem formulário, não pede cadastro e não usa cookies de estatística ou de
+        publicidade. Nenhum dado de saúde é coletado por aqui.
+      </p>
+    </div>
+
+    <div class="prose-cefon mt-12">
+      <h2>1. Quem é o responsável pelos dados</h2>
+      <p>
+        {clinica.nomeCompleto}, CNPJ {cnpj}, com endereço em {enderecoCompleto()}. Telefone:{' '}
+        <a href={clinica.telefone.link}>{clinica.telefone.exibicao}</a>.
+      </p>
+
+      <h2>2. Quais dados o site coleta e para quê</h2>
+      <p>
+        Ao acessar qualquer site, o servidor de hospedagem registra informações técnicas da visita, como endereço
+        IP, data e hora, tipo de navegador e página acessada. Usamos esses registros só para manter o site seguro e
+        funcionando. Eles ficam guardados pelo prazo exigido pelo Marco Civil da Internet (Lei nº 12.965/2014) e
+        depois são apagados.
+      </p>
+      <p>O site não pede seu nome, telefone, e-mail ou qualquer informação sobre sua saúde.</p>
+
+      <h2 id="mapa">3. Mapa do Google</h2>
+      <p>
+        Na seção de contato há um mapa do Google. Ele só é carregado quando você toca em “Mostrar mapa”. A partir
+        daí, o Google pode coletar dados como seu endereço IP e usar cookies próprios, conforme a{' '}
+        <a href="https://policies.google.com/privacy?hl=pt-BR" target="_blank" rel="noopener">Política de Privacidade do Google</a>.
+        Se preferir, use o botão “Como chegar”, que abre o Google Maps fora do site.
+      </p>
+
+      <h2>4. Telefone, WhatsApp e Google Maps</h2>
+      <p>
+        Os botões de ligar, de rota e de WhatsApp abrem o aplicativo do seu aparelho ou o site desses serviços.
+        A partir desse momento valem as políticas de privacidade de cada um.
+      </p>
+
+      <h2>5. Cookies</h2>
+      <p>
+        Este site não usa cookies próprios nem ferramentas de estatística ou de publicidade. Por isso, não exibe
+        aviso de cookies.
+      </p>
+
+      <h2>6. Seus direitos</h2>
+      <p>Pela Lei Geral de Proteção de Dados (Lei nº 13.709/2018), você pode pedir, a qualquer momento:</p>
+      <ul>
+        <li>a confirmação de que tratamos dados seus e o acesso a eles;</li>
+        <li>a correção de dados incompletos ou desatualizados;</li>
+        <li>a exclusão de dados, quando a lei permitir;</li>
+        <li>informações sobre com quem compartilhamos dados.</li>
+      </ul>
+
+      <h2>7. Como fazer um pedido</h2>
+      <p>
+        Ligue para <a href={clinica.telefone.link}>{clinica.telefone.exibicao}</a> ou fale com a recepção da
+        clínica. Respondemos no prazo previsto na LGPD.
+      </p>
+
+      <h2>8. Atendimentos na clínica</h2>
+      <p>
+        Esta política trata só do site. As informações dos atendimentos feitos na clínica seguem o sigilo
+        profissional da fonoaudiologia e a LGPD.
+      </p>
+
+      <h2>9. Mudanças nesta política</h2>
+      <p>Se esta política mudar, a nova versão será publicada nesta página, com a data de atualização.</p>
+    </div>
+
+    <p class="mt-12">
+      <a href="/" class="btn btn-secondary">Voltar para o início</a>
+    </p>
+  </article>
+</Layout>
+
+<style>
+  .prose-cefon :global(h2) {
+    margin-top: 2.5rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  .prose-cefon :global(p),
+  .prose-cefon :global(ul) {
+    margin-top: 0.875rem;
+  }
+
+  .prose-cefon :global(ul) {
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+
+  .prose-cefon :global(li + li) {
+    margin-top: 0.375rem;
+  }
+
+  .prose-cefon :global(a:not(.btn)) {
+    color: var(--color-sky-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

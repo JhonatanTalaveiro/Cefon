@@ -1,0 +1,96 @@
+---
+import { clinica, formatarHora, linkWhatsapp } from '../../data/clinica';
+import Button from '../Button.astro';
+import Icon from '../Icon.astro';
+import MapFacade from '../MapFacade.astro';
+
+const whatsapp = linkWhatsapp();
+const { rua, bairro, cidade, uf, cep } = clinica.endereco;
+---
+
+<section id="contato" class="border-t border-line bg-white py-20 lg:py-32" aria-labelledby="titulo-contato">
+  <div class="container-site">
+    <div class="max-w-2xl" data-reveal>
+      <p class="mini-titulo text-coral-ink">Endereço, telefone e horário</p>
+      <h2 id="titulo-contato" class="mt-3 text-4xl leading-[1.1] font-medium sm:text-5xl">Como chegar e falar com a gente</h2>
+    </div>
+
+    <div class="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-[1fr_1.1fr]">
+      <div class="rounded-[2rem] border border-line bg-paper p-5 sm:p-10" data-reveal>
+        <div class="space-y-8">
+          <div class="flex gap-4">
+            <span class="icon-bubble shrink-0" style="--tint: var(--color-brand-coral); --ink: var(--color-coral-ink)">
+              <Icon name="pin" class="size-6" />
+            </span>
+            <div>
+              <h3 class="font-sans text-lg font-semibold">Endereço</h3>
+              <div class="mt-1">
+                <span class="block">{rua}</span>
+                <span class="block">{bairro}, {cidade}/{uf}</span>
+                <span class="block whitespace-nowrap">CEP {cep}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <span class="icon-bubble shrink-0" style="--tint: var(--color-brand-sky); --ink: var(--color-sky-ink)">
+              <Icon name="phone" class="size-6" />
+            </span>
+            <div>
+              <h3 class="font-sans text-lg font-semibold">Telefone</h3>
+              <div class="mt-1">
+                <a href={clinica.telefone.link} class="font-display text-2xl font-medium text-ink underline-offset-4 hover:underline">
+                  {clinica.telefone.exibicao}
+                </a>
+                {clinica.whatsapp && <span class="block">WhatsApp: {clinica.whatsapp.exibicao}</span>}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4">
+            <span class="icon-bubble shrink-0" style="--tint: var(--color-brand-green); --ink: var(--color-green-ink)">
+              <Icon name="clock" class="size-6" />
+            </span>
+            <div class="flex-1">
+              <h3 class="font-sans text-lg font-semibold">Horário de atendimento</h3>
+              <div class="mt-2">
+                <ul class="divide-y divide-line">
+                  {clinica.horarios.map((h) => (
+                    <li class="flex justify-between gap-3 py-2 text-base sm:text-lg">
+                      <span>{h.dias}</span>
+                      <span class:list={['text-right whitespace-nowrap', h.abre ? 'font-semibold text-ink' : 'text-muted']}>
+                        {h.abre && h.fecha ? `${formatarHora(h.abre)} às ${formatarHora(h.fecha)}` : 'Fechado'}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Uma coluna no desktop: o cartão fica estreito e os textos dos botões quebrariam -->
+        <div class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+          <Button href={clinica.telefone.link} icon="phone" detalhe={clinica.telefone.exibicao}>Ligar para agendar</Button>
+          <Button href={clinica.mapas.rota} variant="secondary" icon="route" external detalhe="Rota pelo Google Maps">
+            Como chegar
+          </Button>
+          {whatsapp && (
+            <Button
+              href={whatsapp}
+              variant="secondary"
+              icon="chat"
+              external
+              detalhe={clinica.whatsapp!.exibicao}
+              class="sm:col-span-2 lg:col-span-1"
+            >
+              Conversar no WhatsApp
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <MapFacade />
+    </div>
+  </div>
+</section>

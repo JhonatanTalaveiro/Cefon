@@ -1,0 +1,57 @@
+---
+import { clinica } from '../data/clinica';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+---
+
+<!--
+  O mapa do Google só carrega quando a pessoa pede: o site fica mais leve
+  e nenhum dado vai para o Google sem uma ação dela (LGPD).
+-->
+<div class="relative min-h-[26rem] overflow-hidden rounded-[2rem] border border-line bg-sand" data-map>
+  <div class="map-placeholder absolute inset-0" aria-hidden="true"></div>
+
+  <div class="absolute top-[38%] left-1/2 -translate-x-1/2 -translate-y-1/2" aria-hidden="true">
+    <span class="absolute inset-0 rounded-full bg-brand-coral/25 motion-safe:animate-ping"></span>
+    <span class="relative grid size-20 place-items-center rounded-full bg-white shadow-xl ring-4 ring-white/60">
+      <Logo variant="mark" class="size-12" decorative />
+    </span>
+  </div>
+
+  <div class="absolute inset-x-4 bottom-4 rounded-3xl bg-white p-5 shadow-lg sm:inset-x-6 sm:bottom-6 sm:p-6">
+    <p class="font-semibold text-ink">{clinica.endereco.rua}, {clinica.endereco.bairro}</p>
+    <p class="mt-1 text-base text-muted">
+      Ao mostrar o mapa, o Google pode coletar dados de navegação.{' '}
+      <a href="/politica-de-privacidade/#mapa" class="font-medium text-sky-ink underline underline-offset-4">Saiba mais</a>
+    </p>
+    <div class="mt-4 flex flex-wrap gap-3">
+      <button type="button" class="btn btn-primary min-h-12 px-5" data-map-load>
+        <Icon name="map" class="size-5" strokeWidth={2} />
+        Mostrar mapa
+      </button>
+      <a href={clinica.mapas.abrir} target="_blank" rel="noopener" class="btn btn-secondary min-h-12 px-5">
+        Abrir no Google Maps<span class="sr-only"> (abre em nova aba)</span>
+      </a>
+    </div>
+  </div>
+
+  <template data-map-template>
+    <iframe
+      src={clinica.mapas.embed}
+      title="Mapa com a localização do CEFON em Mococa"
+      class="absolute inset-0 size-full border-0"
+      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen></iframe>
+  </template>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((map) => {
+    map.querySelector('[data-map-load]')?.addEventListener('click', () => {
+      const template = map.querySelector<HTMLTemplateElement>('[data-map-template]');
+      if (!template) return;
+      map.replaceChildren(template.content.cloneNode(true));
+      map.querySelector('iframe')?.focus();
+    });
+  });
+</script>

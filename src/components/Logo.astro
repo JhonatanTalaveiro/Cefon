@@ -1,0 +1,28 @@
+---
+import { FULL_VIEWBOX, MARK_VIEWBOX, markSvg, wordmarkSvg } from '../data/logo';
+import { clinica } from '../data/clinica';
+
+interface Props {
+  class?: string;
+  /** `full` = símbolo + "cefon"; `mark` = só os círculos */
+  variant?: 'full' | 'mark';
+  /** Use quando o logo estiver dentro de um link que já tem nome acessível. */
+  decorative?: boolean;
+  strokeWidth?: number;
+}
+
+const { class: className, variant = 'full', decorative = false, strokeWidth } = Astro.props;
+const full = variant === 'full';
+const a11y = decorative
+  ? ({ 'aria-hidden': 'true' } as const)
+  : ({ role: 'img', 'aria-label': clinica.nomeCompleto } as const);
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox={full ? FULL_VIEWBOX : MARK_VIEWBOX}
+  class={className}
+  focusable="false"
+  {...a11y}
+  set:html={markSvg + (full ? wordmarkSvg('currentColor', strokeWidth) : '')}
+/>

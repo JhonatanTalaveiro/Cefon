@@ -1,0 +1,66 @@
+---
+import type { IconName } from '../../data/icons';
+import Icon from '../Icon.astro';
+
+const destaques: { titulo: string; texto: string; icone: IconName; tint: string; ink: string }[] = [
+  {
+    titulo: 'Todas as idades',
+    texto: 'Do bebê ao idoso, com atendimento pensado para cada fase.',
+    icone: 'users',
+    tint: 'var(--color-brand-sky)',
+    ink: 'var(--color-sky-ink)',
+  },
+  {
+    titulo: 'Explicação clara',
+    texto: 'Você sai sabendo o resultado e quais são os próximos passos.',
+    icone: 'speech',
+    tint: 'var(--color-brand-coral)',
+    ink: 'var(--color-coral-ink)',
+  },
+  {
+    titulo: 'No centro de Mococa',
+    texto: 'Fácil de chegar, na Rua Antônio Teófilo.',
+    icone: 'pin',
+    tint: 'var(--color-brand-green)',
+    ink: 'var(--color-green-ink)',
+  },
+];
+---
+
+<section id="sobre" class="pt-16 pb-20 lg:pt-20 lg:pb-32" aria-labelledby="titulo-sobre">
+  <div class="container-site grid gap-10 lg:grid-cols-12 lg:gap-16">
+    <div class="lg:col-span-5" data-reveal>
+      <p class="mini-titulo text-coral-ink">Sobre a clínica</p>
+      <h2 id="titulo-sobre" class="mt-3 text-4xl leading-[1.1] font-medium sm:text-5xl">
+        Cuidado próximo, em cada fase da vida
+      </h2>
+    </div>
+
+    <div class="space-y-5 text-lg sm:text-xl lg:col-span-7" data-reveal>
+      <p class="text-ink">
+        O CEFON é um centro de fonoaudiologia em Mococa. Atendemos bebês, crianças, adultos e idosos em tudo o
+        que envolve ouvir, falar e se comunicar.
+      </p>
+      <p>
+        Cada atendimento começa com uma conversa: entendemos o que você ou sua família precisa, explicamos cada
+        etapa com palavras simples e indicamos o melhor caminho.
+      </p>
+      <!-- PENDENTE: há quanto tempo a clínica atende e quais cidades vizinhas citar. -->
+      <p>Recebemos pacientes de Mococa e de toda a região.</p>
+    </div>
+  </div>
+
+  <div class="container-site mt-14 lg:mt-20">
+    <ul class="grid gap-4 sm:grid-cols-3 sm:gap-6">
+      {destaques.map((d) => (
+        <li class="rounded-3xl border border-line bg-white p-7" data-reveal>
+          <span class="icon-bubble" style={`--tint:${d.tint};--ink:${d.ink}`}>
+            <Icon name={d.icone} class="size-6" />
+          </span>
+          <h3 class="mt-6 text-xl font-semibold">{d.titulo}</h3>
+          <p class="mt-2 text-base sm:text-lg">{d.texto}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

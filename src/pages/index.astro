@@ -1,0 +1,60 @@
+---
+import Contato from '../components/sections/Contato.astro';
+import Hero from '../components/sections/Hero.astro';
+import Profissionais from '../components/sections/Profissionais.astro';
+import Servicos from '../components/sections/Servicos.astro';
+import Sobre from '../components/sections/Sobre.astro';
+import { clinica } from '../data/clinica';
+import { grupos } from '../data/servicos';
+import Layout from '../layouts/Layout.astro';
+
+const title = `Fonoaudiologia em Mococa | ${clinica.nomeCompleto}`;
+const description =
+  'Fonoaudiologia e exames auditivos em Mococa e região: audiometria, teste da orelhinha, terapia de fala, linguagem e voz. Ligue (19) 3665-6803.';
+
+// Dados estruturados para o Google (schema.org/MedicalClinic)
+const site = Astro.site!.href;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalClinic',
+  '@id': `${site}#clinica`,
+  name: clinica.nomeCompleto,
+  alternateName: clinica.nome,
+  url: site,
+  logo: new URL('/logo.png', site).href,
+  image: new URL('/og-image.png', site).href,
+  telephone: clinica.telefone.internacional,
+  medicalSpecialty: 'https://schema.org/SpeechPathology',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${clinica.endereco.rua} - ${clinica.endereco.bairro}`,
+    addressLocality: clinica.endereco.cidade,
+    addressRegion: clinica.endereco.uf,
+    postalCode: clinica.endereco.cep,
+    addressCountry: 'BR',
+  },
+  ...(clinica.geo && {
+    geo: { '@type': 'GeoCoordinates', latitude: clinica.geo.lat, longitude: clinica.geo.lng },
+  }),
+  hasMap: clinica.mapas.abrir,
+  areaServed: { '@type': 'City', name: clinica.endereco.cidade },
+  openingHoursSpecification: clinica.horarios
+    .filter((h) => h.abre && h.fecha)
+    .map((h) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.diasSchema, opens: h.abre, closes: h.fecha })),
+  availableService: grupos.flatMap((g) => g.itens.map((item) => ({ '@type': 'MedicalProcedure', name: item.nome }))),
+};
+---
+
+<Layout title={title} description={description}>
+  <script type="application/ld+json" slot="head" is:inline set:html={JSON.stringify(schema)} />
+  <Hero />
+  <Sobre />
+  <Servicos />
+  <Profissionais />
+  <Contato />
+</Layout>
+
+<!-- GSAP só na página inicial, que é onde há animações -->
+<script>
+  import '../scripts/motion';
+</script>

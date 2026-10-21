@@ -1,0 +1,73 @@
+---
+import '../styles/global.css';
+import figtree from '@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2?url';
+import outfit from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import MobileBar from '../components/MobileBar.astro';
+import { clinica } from '../data/clinica';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og-image.png', Astro.site);
+
+// Só o subconjunto latino (cobre o português) e pré-carregado, para o texto aparecer rápido.
+const fontFaces =
+  `@font-face{font-family:"Figtree Variable";font-style:normal;font-weight:300 900;font-display:swap;src:url(${figtree}) format("woff2")}` +
+  `@font-face{font-family:"Outfit Variable";font-style:normal;font-weight:100 900;font-display:swap;src:url(${outfit}) format("woff2")}`;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="preload" href={figtree} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={outfit} as="font" type="font/woff2" crossorigin />
+    <Fragment set:html={`<style>${fontFaces}</style>`} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <meta name="theme-color" content="#fbfaf7" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={clinica.nomeCompleto} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`Logo do ${clinica.nomeCompleto}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+    <MobileBar />
+
+    <script>
+      import '../scripts/ui';
+    </script>
+  </body>
+</html>

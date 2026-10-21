@@ -1,0 +1,77 @@
+---
+import { clinica } from '../data/clinica';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+
+const links = [
+  { href: '/#sobre', label: 'Sobre' },
+  { href: '/#servicos', label: 'Exames e serviços' },
+  { href: '/#profissionais', label: 'Profissionais' },
+  { href: '/#contato', label: 'Contato' },
+];
+---
+
+<header class="site-header sticky top-0 z-50" data-header>
+  <div class="container-site flex h-[4.5rem] items-center justify-between gap-6 lg:h-20">
+    <a href="/" class="-ml-1 rounded-lg p-1 text-brand-gray" aria-label={`${clinica.nomeCompleto}, página inicial`}>
+      <Logo class="h-10 w-auto lg:h-11" decorative strokeWidth={3.8} />
+    </a>
+
+    <nav aria-label="Principal" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {links.map((link) => (
+          <li>
+            <a href={link.href} class="nav-link">{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <Button href={clinica.telefone.link} icon="phone" class="hidden min-h-12 px-5 sm:inline-flex">
+        Agendar: {clinica.telefone.exibicao}
+      </Button>
+      <button
+        type="button"
+        class="grid size-12 place-items-center rounded-full border border-line bg-white text-ink lg:hidden"
+        aria-expanded="false"
+        aria-controls="menu-mobile"
+        aria-label="Abrir menu"
+        data-menu-toggle
+      >
+        <Icon name="menu" class="size-6" strokeWidth={2} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Fora do <header>: o backdrop-filter dele prenderia este painel fixo dentro da altura do cabeçalho -->
+<div
+  id="menu-mobile"
+  class="menu-panel fixed inset-x-0 top-[4.5rem] bottom-0 z-[45] overflow-y-auto border-t border-line bg-paper lg:hidden"
+  data-open="false"
+  inert
+>
+  <nav aria-label="Menu" class="container-site flex min-h-full flex-col py-6">
+    <ul class="divide-y divide-line">
+      {links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="flex items-center justify-between py-5 font-display text-2xl font-medium text-ink"
+          >
+            {link.label}
+            <Icon name="arrowRight" class="size-5 text-muted" />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="mt-auto grid gap-3 pt-8">
+      <Button href={clinica.telefone.link} icon="phone" detalhe={clinica.telefone.exibicao}>Ligar para agendar</Button>
+      <Button href={clinica.mapas.rota} variant="secondary" icon="route" external detalhe="Rota pelo Google Maps">
+        Como chegar
+      </Button>
+    </div>
+  </nav>
+</div>

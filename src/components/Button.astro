@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { IconName } from '../data/icons';
+import Icon from './Icon.astro';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'yellow' | 'outline-light';
+  icon?: IconName;
+  /** Abre em nova aba (Google Maps, WhatsApp). */
+  external?: boolean;
+  /** Segunda linha, menor: diz o que acontece ao tocar (o número, o app que abre). */
+  detalhe?: string;
+}
+
+const { href, variant = 'primary', icon, external = false, detalhe, class: className, ...rest } = Astro.props;
+const externalAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
+---
+
+<a href={href} class:list={['btn', `btn-${variant}`, className]} {...externalAttrs} {...rest}>
+  {icon && <Icon name={icon} class="size-5 shrink-0" strokeWidth={2} />}
+  <span class:list={{ 'flex flex-col text-left': detalhe }}>
+    <slot />
+    {detalhe && <span class="btn-detalhe">{detalhe}</span>}
+  </span>
+  {external && <span class="sr-only"> (abre em nova aba)</span>}
+</a>

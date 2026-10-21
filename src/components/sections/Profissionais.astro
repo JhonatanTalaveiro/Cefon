@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import { profissionais } from '../../data/profissionais';
+import Icon from '../Icon.astro';
+
+const tons = [
+  { tint: 'var(--color-brand-coral)', ink: 'var(--color-coral-ink)' },
+  { tint: 'var(--color-brand-sky)', ink: 'var(--color-sky-ink)' },
+  { tint: 'var(--color-brand-green)', ink: 'var(--color-green-ink)' },
+  { tint: 'var(--color-brand-yellow)', ink: 'var(--color-amber-ink)' },
+];
+
+function iniciais(nome: string) {
+  const partes = nome.trim().split(/\s+/);
+  return (partes[0][0] + (partes.length > 1 ? partes[partes.length - 1][0] : '')).toUpperCase();
+}
+---
+
+<section id="profissionais" class="py-20 lg:py-32" aria-labelledby="titulo-profissionais">
+  <div class="container-site">
+    <div class="max-w-2xl" data-reveal>
+      <p class="mini-titulo text-green-ink">Nossa equipe</p>
+      <h2 id="titulo-profissionais" class="mt-3 text-4xl leading-[1.1] font-medium sm:text-5xl">Quem cuida de você</h2>
+      <p class="mt-5 text-lg sm:text-xl">
+        Fonoaudiólogas com registro no Conselho Regional de Fonoaudiologia (CRFa).
+      </p>
+    </div>
+
+    <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+      {profissionais.map((p, i) => {
+        const tom = tons[i % tons.length];
+        return (
+          <li class="card flex flex-col rounded-[2rem] border border-line bg-white p-7 sm:p-8" data-reveal>
+            <div class="flex items-start justify-between gap-4">
+              {p.foto ? (
+                <Image
+                  src={p.foto}
+                  alt={`Foto de ${p.nome}`}
+                  width={192}
+                  height={192}
+                  class="size-24 rounded-full object-cover"
+                />
+              ) : (
+                <span
+                  class="grid size-24 place-items-center rounded-full font-display text-3xl font-medium"
+                  style={`background:color-mix(in srgb, ${tom.tint} 22%, white);color:${tom.ink}`}
+                  aria-hidden="true"
+                >
+                  {iniciais(p.nome)}
+                </span>
+              )}
+              {p.responsavelTecnica && (
+                <span class="rounded-full bg-sand px-3 py-1.5 text-sm font-semibold text-ink">Responsável técnica</span>
+              )}
+            </div>
+            <h3 class="mt-6 text-2xl font-medium">{p.nome}</h3>
+            <p class="mt-1 flex items-center gap-2 text-base">
+              {p.cargo}
+              <span aria-hidden="true">·</span>
+              <span class="inline-flex items-center gap-1.5 font-semibold text-ink">
+                <Icon name="badge" class="size-4 text-green-ink" strokeWidth={2} />
+                {p.crfa}
+              </span>
+            </p>
+            <ul class="mt-5 flex flex-wrap gap-2" aria-label="Áreas de atuação">
+              {p.areas.map((area) => (
+                <li class="rounded-full border border-line px-3 py-1 text-[0.9375rem]">{area}</li>
+              ))}
+            </ul>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>

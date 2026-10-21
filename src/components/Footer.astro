@@ -1,0 +1,54 @@
+---
+import { clinica, enderecoCompleto, formatarHora } from '../data/clinica';
+import Logo from './Logo.astro';
+
+const ano = new Date().getFullYear();
+---
+
+<footer class="bg-ink text-white/75">
+  <div class="container-site grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:py-20">
+    <div>
+      <Logo class="h-12 w-auto text-white" />
+      <p class="mt-6 max-w-sm">Fonoaudiologia em Mococa e região. Exames auditivos e terapias para todas as idades.</p>
+    </div>
+
+    <div>
+      <h2 class="text-base font-semibold tracking-wide text-white">Contato</h2>
+      <address class="mt-4 space-y-3 not-italic">
+        <p>{enderecoCompleto()}</p>
+        <p>
+          <a href={clinica.telefone.link} class="font-semibold text-white underline-offset-4 hover:underline">
+            {clinica.telefone.exibicao}
+          </a>
+        </p>
+      </address>
+    </div>
+
+    <div>
+      <h2 class="text-base font-semibold tracking-wide text-white">Horário</h2>
+      <ul class="mt-4 space-y-2">
+        {clinica.horarios.map((h) => (
+          <li>
+            {h.dias}: {h.abre && h.fecha ? `${formatarHora(h.abre)} às ${formatarHora(h.fecha)}` : 'fechado'}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <!-- Espaço extra no celular para a barra fixa não cobrir o rodapé -->
+    <div class="container-site flex flex-col gap-4 pt-8 pb-[calc(7rem+env(safe-area-inset-bottom))] text-base md:flex-row md:items-center md:justify-between lg:pb-8">
+      <p>
+        <span class="text-white">Responsável técnica:</span>{' '}
+        {clinica.responsavelTecnica.nome}, {clinica.responsavelTecnica.crfa}
+      </p>
+      <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-6">
+        <a href="/politica-de-privacidade/" class="font-semibold text-white underline underline-offset-4">
+          Política de Privacidade
+        </a>
+        <p>© {ano} {clinica.nomeCompleto}</p>
+      </div>
+    </div>
+  </div>
+</footer>
