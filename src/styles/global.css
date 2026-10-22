@@ -224,7 +224,8 @@
       color 0.2s,
       background-color 0.2s;
 
-    &:hover {
+    &:hover,
+    &[aria-current] {
       color: var(--color-ink);
       background: var(--color-sand);
     }
@@ -310,7 +311,8 @@
     opacity: 0;
   }
 
-  .js .marker {
+  /* Só o grifo do início; os dos títulos ([data-grifo]) são escondidos pelo JS, e só abaixo da tela */
+  .js .marker:not([data-grifo]) {
     background-size: 0% 0.32em;
   }
 }

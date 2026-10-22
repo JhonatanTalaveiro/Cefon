@@ -28,6 +28,6 @@ Procure por `PENDENTE` no código para ver tudo o que depende da cliente.
 ## Decisões
 
 - **Mapa do Google** só carrega quando a pessoa toca em "Mostrar mapa". Deixa o site leve e evita enviar dados ao Google sem ação da pessoa (LGPD).
-- **Animações** (GSAP) ficam só no topo e na entrada das seções, e são desligadas para quem ativou "reduzir movimento" no aparelho.
+- **Animações** (GSAP): entrada do topo, seções que aparecem ao rolar e alguns efeitos suaves que acompanham a rolagem (profundidade no topo, grifo amarelo nos títulos, itens de serviços se montando, círculos da faixa escura). Tudo é desligado para quem ativou "reduzir movimento" no aparelho.
 - **Fontes** (Outfit e Figtree) são servidas pelo próprio site, só com o subconjunto latino.
 - **Sem cookies e sem estatísticas**: por isso não há aviso de cookies.
